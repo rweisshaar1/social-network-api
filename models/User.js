@@ -23,13 +23,13 @@ const userSchema = new Schema(
     thoughts: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Thought',
+        ref: 'thought',
       },
     ],
     friends: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'user',
       },
     ],
   },
@@ -47,7 +47,6 @@ userSchema
   .get(function () {
     return `${this.friends}`;
   })
-  // Setter to set the first and last name
   .set(function (v) {
     const friends = v.length
     this.set({ friends });

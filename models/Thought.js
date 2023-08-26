@@ -1,4 +1,32 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
+
+const reactionSchema = new Schema(
+  {
+    reactionId: {
+      type: Schema.Types.ObjectId,
+      default: () => new Types.ObjectId(),
+    },
+    reactionBody: {
+      type: String,
+      required: true,
+      maxlength: 280,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    toJSON: {
+      getters: true,
+    },
+    id: false,
+  }
+);
 
 const thoughtSchema = new Schema(
   {
@@ -17,7 +45,7 @@ const thoughtSchema = new Schema(
       type: String,
       required: true,
     },
-    reactions: {},
+    reactions: [reactionSchema],
   },
   {
     toJSON: {
@@ -27,44 +55,11 @@ const thoughtSchema = new Schema(
   }
 );
 
-const reactionSchema = new Schema(
-  {
-    reactionId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
-    },
-    reactionBody: {
-      type: String,
-      required: true,
-      maxlength: 280,
-    },
-    username: {
-      type: Number,
-      required: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  {
-    toJSON: {
-      getters: true,
-    },
-    id: false,
-  }
-);
-
 thoughtSchema
   .virtual('reactionCount')
   // Getter
   .get(function () {
-    return `${this.reactions}`;
-  })
-  // Setter to set the first and last name
-  .set(function (v) {
-    const reactions = v.length
-    this.set({ reactions });
+    return `${this.reactions.length}`;
   });
 
 const Thought = model('thought', thoughtSchema);
